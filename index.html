@@ -14,8 +14,8 @@
     <h1>Rolling Ball Animation</h1>
     <button onclick="startAnimation()">Play</button>
     <canvas id="animationCanvas" width="800" height="600"></canvas>
-    <img id="backgroundImage" src="C:/Users/WELCOME/Desktop/memeee.png" style="display:none;">
-    <audio id="backgroundMusic" src="your-music-file.mp3" loop></audio>
+    <img id="backgroundImage" src="C:\Users\WELCOME\Desktop\memeee.png" style="display:none;">
+    <audio id="backgroundMusic" src="C:\Users\WELCOME\Desktop\Interstellar.mp3" loop></audio>
 
     <script>
         const canvas = document.getElementById('animationCanvas');
@@ -24,10 +24,7 @@
         const inclineAngle = 30;
         const lineLength = 500;
 
-        const balls = [
-            { x: 100, y: canvas.height - 100, radius: 10, speed: 3, color: 'yellow', state: 'moving' },
-            { x: 100, y: canvas.height - 100, radius: 10, speed: 3, color: 'green', state: 'moving' }
-        ];
+        const ball = { x: 100, y: canvas.height - 100, radius: 10, speed: 3, color: 'green', state: 'moving' };
 
         let animation;
 
@@ -44,7 +41,7 @@
             ctx.stroke();
         }
 
-        function drawBall(ball) {
+        function drawBall() {
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             ctx.fillStyle = ball.color;
@@ -52,7 +49,7 @@
             ctx.closePath();
         }
 
-        function updateBallPosition(ball) {
+        function updateBallPosition() {
             const inclineEndX = 100 + lineLength * Math.cos(Math.PI * inclineAngle / 180);
 
             if (ball.state === 'moving' && ball.x + ball.radius < inclineEndX) {
@@ -67,7 +64,7 @@
             }
         }
 
-        function resetBallPosition(ball) {
+        function resetBallPosition() {
             ball.x = 100;
             ball.y = canvas.height - 100;
             ball.state = 'moving';
@@ -80,9 +77,9 @@
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
             drawInclineLine();
-            balls.forEach(drawBall);
+            drawBall();
 
-            balls.forEach(updateBallPosition);
+            updateBallPosition();
         }
 
         function startAnimation() {
@@ -92,7 +89,7 @@
                 backgroundMusic.pause();
                 backgroundMusic.currentTime = 0;
             }
-            balls.forEach(resetBallPosition);
+            resetBallPosition();
             animation = setInterval(draw, 1000 / 60);
             const backgroundMusic = document.getElementById('backgroundMusic');
             backgroundMusic.play();
@@ -100,5 +97,3 @@
     </script>
 </body>
 </html>
-
-       
