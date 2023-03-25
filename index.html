@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Ball Animation</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rolling Ball Animation</h1>
+    <button onclick="startAnimation()">Play</button>
+    <canvas id="animationCanvas" width="800" height="600"></canvas>
+    <img id="backgroundImage" src="your-background-image.jpg" style="display:none;">
+    <audio id="backgroundMusic" src="your-music-file.mp3" loop></audio>
+
+    <script>
+        const canvas = document.getElementById('animationCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const inclineAngle = 30;
+        const lineLength = 500;
+
+        const balls = [
+            { x: 100, y: canvas.height - 100, radius: 10, speed: 3, color: 'yellow', state: 'moving' },
+            { x: 100, y: canvas.height - 100, radius: 10, speed: 3, color: 'green', state: 'moving' }
+        ];
+
+        let animation;
+
+        function drawInclineLine() {
+            const startX = 100;
+            const startY = canvas.height - 100;
+
+            const endX = startX + lineLength * Math.cos(Math.PI * inclineAngle / 180);
+            const endY = startY - lineLength * Math.sin(Math.PI * inclineAngle / 180);
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+
+        function drawBall(ball) {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function updateBallPosition(ball) {
+            const inclineEndX = 100 + lineLength * Math.cos(Math.PI * inclineAngle / 180);
+
+            if (ball.state === 'moving' && ball.x + ball.radius < inclineEndX) {
+                ball.x += ball.speed * Math.cos(Math.PI * inclineAngle / 180);
+                ball.y -= ball.speed * Math.sin(Math.PI * inclineAngle / 180);
+            } else if (ball.state === 'moving') {
+                ball.state = 'falling';
+            }
+
+            if (ball.state === 'falling') {
+                ball.y += ball.speed;
+            }
+        }
+
+        function resetBallPosition(ball) {
+            ball.x = 100;
+            ball.y = canvas.height - 100;
+            ball.state = 'moving';
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const backgroundImage = document.getElementById('backgroundImage');
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+            drawInclineLine();
+            balls.forEach(drawBall);
+
+            balls.forEach(updateBallPosition);
+        }
+
+        function startAnimation() {
+            if (animation) {
+                clearInterval(animation);
+                const backgroundMusic = document.getElementById('backgroundMusic');
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+            }
+            balls.forEach(resetBallPosition);
+            animation = setInterval(draw, 1000 / 60);
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            backgroundMusic.play();
+        }
+    </script>
+</body>
+</html>
+
+       
